@@ -1,0 +1,74 @@
+---
+title: "Incarceration Report"
+author: "Chihan Gao"
+date: "3/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+
+library("tidyverse")
+library("gridExtra")
+library("ggplot2")
+library("ggmap")
+library("mapdata")
+library("knitr")
+library("kableExtra")
+incarceration <- read.csv("incarceration_trends.csv")
+summary_info <- read_csv2("summary_info.csv")
+
+
+```
+
+
+## Introduction
+
+In this assignment, we are going to explore the American incarceration dataset. This data includes incarceration information such as prison population and prison admission of different races between 1970 to 2018, though there are missing values in the dataset.
+We are only going to focus on several variables related to the dataset: year, state, county_name,
+population from 15 to 64, prison population, and prison admission. With these five variables, we 
+will try to analyze and determine if inequality exist in the jail system when it comes to deciding who should go to prison, by which I mean if the race of the defendent affects the jurytrial and ultimately influences the jail admission. Our assumption is that African American has a higher chance of been convicted and sent to jail while White American has a relatively lower chance. Therefore, we will only focus on two races, black and white, throughout our report.
+
+Because it is required to provide the calculated stats in the front so I will provide them here:
+top 5 states with the most population change overtime:`r summary_info[[1,1]]`; White and Black population mean in the selected states in 2018: white `r summary_info[[2,1]]` and black `r summary_info[[3,1]]`; White and Black prison population mean: white `r summary_info[[5,1]]` and black `r summary_info[[4,1]]` ; highest black prison admission population: `r summary_info[[8,1]]` and highest white prison admission population: `r summary_info[[10,1]]`. It is quite boring to see these stats with no explanation, this is because I want to explain them in a much longer paragraph later so you can understand my idea and why I graph my graph. 
+
+Population is the first thing we want to focus on. With a higher number of population, there will be more people going to jail because of the population base. Therefore, we want to find the states with the most rapid change in population overtime, and through calculation, we find the top five states are  `r summary_info[[1,1]]`, which are the abbreviation for North Carolina, Georgia, Florida, Texas, and California. These five states will be our focus for the first two charts. Also, we calculated the most recent population for both white and black for their mean value, which are `r summary_info[[2,1]]` and `r summary_info[[3,1]]`. We can find that the mean population for black community is only one third of the white community. We will get back to population later, but right now we will plot the population for nationwide, black community, and white community.
+
+
+## Chart1 - Population chart overtime, from 1990 to 2016
+
+```{r, echo=FALSE, message = FALSE, warning = FALSE}
+source("Analysis.R")
+chart1
+```
+
+As we illustrate we want to first focus on the population. We can clearly from the first plot that California has the highest population and possiblily the highest African American and White population. However, if we look at the second graph we would find that the state with the most African American would actually be Texas instead of California, and its White population rank the second in all five states. Overtime, Black community change the most in Texas and white population change the most in California through observation. In all five states, the total population and black population increases. In California, the white population decreased. The plot is designed to be combination of line and point is because is the most direct way of representing the information when it comes to time. We need to see what is the number at that year. 
+
+One more thing before we get to the next part, we want to focus on the difference of y axis between black and white. We can see that though black community has more members since 1990, it its community is relatively smaller than the white community. 
+
+############################################################################
+## Chart 2 - Prison Population of the selected states and prison to population ratio
+
+Next we focus on the prison population. As we illustrated before, larger population base might leads to more prison population. We now know that population is increasing overtime and both races, especially black have more population than before. We calculated the mean black and white prison population for the most recent date and we get: white `r summary_info[[5,1]]` and black `r summary_info[[4,1]]`. We can see that black prison population mean is actually bigger than white community by almost seven thousand. We wonder if this implies that our assumption about the relationship between population and prison population is false since black community has a relatively less population. We graph:
+
+```{r, echo=FALSE, message = FALSE, warning = FALSE}
+source("Analysis.R")
+chart2
+```
+
+From the graph, we can see that there is a positive relationship between population and prison population because with more population, the points for prison population is higher which implies more prison pop, and this is the case for both top plots. However, if we look at the bottom plots we will find that there is a relatively higher prison to population ratio for the black community despite black community is less populated. Also, white prison to population ratio is faltter and therefore more stable than the black community.
+
+What happened? Why is black community having a higher prison population and prison to population ratio than the white population. To explain this, we need our last jigsaw puzzle: the prison admission population each year. Remember, this number is calculated differently than the other two because it is renewed every year. We will treat this variable differently and also plot it differently because we want to look at all the prison admission in US in 2016.
+
+############################################################################
+# Map - Prison Admission Map in US in 2016
+```{r, echo=FALSE, message = FALSE, warning = FALSE}
+source("Analysis.R")
+map1
+```
+
+From the plot, it seems like White Prison Admission is higher than the African American Prison Admission. However, we need to get back to the population topic: black's population is only one third of the white's population. But, when we look at the label on the side, it is easy to see that black prison admission and white prison admission has the same range: 0~20000. Also, let's look at the state with the most admission in both races: Texas. We calculated the black and white population in Texas in 2016 which are: `r summary_info[[12,1]]` and `r summary_info[[13,1]]`. We can see that black population is one third of the white population. What about prison admission? black `r summary_info[[8,1]]` and white `r summary_info[[10,1]]`. Their number are surprisingly close to each other when consider a such huge population gap. 
+
+# Conclusion
+
+To sum up, there is only one possibility here, which is inequality exist in the justice system and blacks are treated badly when facing a trail. We see both prison admission and prison population having close numbers in both races while the prison to population ratio is much higher in the black community. If the same crime is committed, African American would have a higher chance of sending to prison than White.
